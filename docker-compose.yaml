@@ -1,0 +1,53 @@
+version: '3.1'
+
+services:
+  multi-platform-todo-list-app:
+    container_name: multi-platform-todo-list-app
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:3000
+    command: >
+      sh -cx "npm run start:dev"
+    links:
+      - mongodb
+    restart: unless-stopped
+    volumes:
+      - ./src/:/usr/src/app/src
+    networks:
+      - multi-platform-todo-list-network
+
+  mongodb:
+    # image: mongo
+    image: arm64v8/mongo
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27017:27017
+    networks:
+      - multi-platform-todo-list-network
+  
+  mongo-express:
+    image: arm64v8/mongo-express
+    container_name: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://root:root@mongodb:27017/
+    ports:
+      - 8081:8081
+    networks:
+      - multi-platform-todo-list-network
+
+# Docker Networks
+networks:
+  multi-platform-todo-list-network:
+    driver: bridge
+
+volumes:
+  multi-platform-todo-list-private-volume:
