@@ -20,7 +20,7 @@ import { CastErrorExceptionFilter } from 'src/filters/cast-error-exception.filte
 import { GeneralSuccessExceptionFilter } from 'src/filters/general-success-exception.filter';
 
 @Controller({
-  path: 'api/users',
+  path: 'api/v1/users',
   version: '1',
 })
 @UseFilters(new MongoExceptionFilter())
